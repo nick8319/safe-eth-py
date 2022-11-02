@@ -1378,6 +1378,11 @@ class EthereumClient:
 
             all_results.extend(results)
 
+        logger.info("payload:")
+        logger.info(payload)
+        logger.info("all_results:")
+        logger.info(all_results)
+
         # Nodes like Erigon send back results out of order
         for query, result in zip(payload, sorted(all_results, key=lambda x: x["id"])):
             if "result" not in result:
