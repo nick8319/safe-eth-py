@@ -1352,19 +1352,12 @@ class EthereumClient:
 
         batch_size = batch_size or self.batch_request_max_size
 
-        logger.info(f"batch_size: {batch_size}")
-        logger.info(f"timeout: {self.slow_timeout}")
-
         all_results = []
         for chunk in chunks(payload, batch_size):
-            logger.info("chunk:")
-            logger.info(chunk)
             response = self.http_session.post(
                 self.ethereum_node_url, json=chunk, timeout=self.slow_timeout
             )
-            logger.info("response:")
-            logger.info(response)
-
+            
             if not response.ok:
                 logger.error(
                     "Problem doing raw batch request with payload=%s status_code=%d result=%s",
@@ -1376,17 +1369,20 @@ class EthereumClient:
 
             results = response.json()
 
-            logger.info("results:")
-            logger.info(results)
-
             # If there's an error some nodes return a json instead of a list
             if isinstance(results, dict) and "error" in results:
                 logger.error(
                     "Batch request problem with payload=%s, result=%s)", chunk, results
                 )
                 raise ValueError(f"Batch request error: {results}")
-
+            
+            logger.info("all_results:")
+            logger.info(all_results)
+            logger.info("Extending all_results with results:")
+            logger.info(results)
             all_results.extend(results)
+            logger.info("all_results:")
+            logger.info(all_results)
 
         logger.info("payload:")
         logger.info(payload)
