@@ -2,6 +2,7 @@ from time import time
 
 from django.test import TestCase
 
+import pytest
 from eth_account import Account
 from web3 import Web3
 
@@ -117,7 +118,7 @@ class TestGnosisProtocolAPI(TestCase):
             order, Account().create().key
         )
         self.assertEqual(
-            order["feeAmount"], 0
+            order.feeAmount, 0
         )  # Cannot estimate, as buy token is the same as the sell token
         self.assertEqual(
             result,
@@ -127,9 +128,15 @@ class TestGnosisProtocolAPI(TestCase):
             },
         )
 
-        order["sellToken"] = self.goerli_gnosis_protocol_api.weth_address
-        order["buyToken"] = self.rinkeby_dai_address
-        self.assertEqual(
-            self.goerli_gnosis_protocol_api.place_order(order, Account().create().key),
-            {"errorType": "NoLiquidity", "description": "not enough liquidity"},
+        order.sellToken = self.goerli_gnosis_protocol_api.weth_address
+        order.buyToken = self.rinkeby_dai_address
+        order_id = self.goerli_gnosis_protocol_api.place_order(
+            order, Account().create().key
         )
+
+        if type(order_id) is dict:
+            if order_id["errorType"] == "NoLiquidity":
+                pytest.xfail("NoLiquidity Error")
+
+        self.assertEqual(order_id[:2], "0x")
+        self.assertEqual(len(order_id), 114)

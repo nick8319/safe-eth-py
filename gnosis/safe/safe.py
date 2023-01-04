@@ -1,6 +1,7 @@
 import dataclasses
 import math
 from enum import Enum
+from functools import cached_property
 from logging import getLogger
 from typing import Callable, List, NamedTuple, Optional, Union
 
@@ -33,7 +34,6 @@ from gnosis.eth.utils import (
     get_eth_address_with_key,
 )
 from gnosis.safe.proxy_factory import ProxyFactory
-from gnosis.util import cached_property
 
 from ..eth.typing import EthereumData
 from .exceptions import (
@@ -816,7 +816,7 @@ class Safe:
         # So gas needed by caller will be around 35k
         OLD_CALL_GAS = 35000
         # Web3 `estimate_gas` estimates less gas
-        WEB3_ESTIMATION_OFFSET = 20000
+        WEB3_ESTIMATION_OFFSET = 23000
         ADDITIONAL_GAS = PROXY_GAS + OLD_CALL_GAS
 
         try:
