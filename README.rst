@@ -15,7 +15,6 @@ Safe-eth-py includes a set of libraries to work with Ethereum and relevant Ether
 Quick start
 -----------
 
-
 Just run ``pip install safe-eth-py`` or add it to your **requirements.txt**
 
 If you want django ethereum utils (models, serializers, filters...) you need to run
